@@ -20,7 +20,7 @@
   color-scheme:dark;
 }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.9;overflow-x:hidden}
 a{color:var(--cyan);text-underline-offset:.22em}
 :focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:2px}
@@ -30,31 +30,45 @@ body::after{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;
 .hero,.wrap{position:relative;z-index:2}
 .wrap{max-width:860px;margin:0 auto;padding:0 24px}
 
-.topbar{position:absolute;z-index:3;inset:0 0 auto;display:flex;justify-content:space-between;align-items:center;max-width:1200px;width:100%;margin:auto;padding:24px;left:0;right:0}
-.brand{color:var(--ink);text-decoration:none;font-family:var(--serif);font-weight:700;letter-spacing:.12em}
-.topnav{display:flex;gap:24px}
+.topbar{position:fixed;z-index:10;top:0;right:0;left:0;display:flex;justify-content:center;align-items:center;width:100%;margin:0;padding:10px 24px;background:#06070DEB;border-bottom:1px solid #2B326080;backdrop-filter:blur(12px)}
+.topbar-inner{display:flex;align-items:center;justify-content:space-between;gap:20px;width:min(100%,1400px);padding:0 24px}
+.top-home{display:flex;flex:none;align-items:center;justify-content:center;width:64px;height:44px}
+.top-home img{display:block;width:100%;height:100%;object-fit:contain}
+.topnav{display:flex;justify-content:flex-end;gap:24px}
 .topnav a{color:var(--sub);font-size:13px;letter-spacing:.08em;text-decoration:none;transition:color .2s}
 .topnav a:hover{color:var(--gold)}
 
 /* ヒーロー */
-.hero{min-height:100svh;display:flex;align-items:center;overflow:hidden}
+.hero{z-index:auto;min-height:100svh;display:flex;align-items:center;overflow:hidden}
 .hero-in{position:relative;width:100%;max-width:1400px;height:min(100svh,980px);min-height:680px;margin:0 auto;padding:64px 24px 0;display:flex;align-items:center}
 .hero-text{position:relative;z-index:2;width:58%;text-shadow:0 2px 24px #06070D}
 .tag{margin:0 0 20px;color:var(--sub)}
 h1{font-family:var(--serif);font-weight:800;font-size:clamp(56px,9vw,116px);line-height:1.1;letter-spacing:.08em;margin:0}
 .romaji{margin:14px 0 28px;color:var(--gold);letter-spacing:.24em;font-size:14px}
 .lead{max-width:28em;margin:0 0 32px;color:#D4D3E4}
-.btn{display:inline-block;padding:11px 28px;border:1px solid var(--gold);color:var(--gold);text-decoration:none;font-weight:700;border-radius:999px;transition:background .25s,color .25s,box-shadow .25s}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:11px 28px;border:1px solid var(--gold);color:var(--gold);text-decoration:none;font-weight:700;border-radius:999px;transition:background .25s,color .25s,box-shadow .25s}
 .btn:hover{background:var(--gold);color:var(--bg);box-shadow:0 0 28px #E2B24F66}
-.art{position:absolute;z-index:1;right:-5%;bottom:0;width:74%;height:100%;margin:0;transform:translate(calc(var(--px,0)*-12px),calc(var(--py,0)*-8px));transition:transform .6s ease-out}
+.social-icon{display:block;width:20px;height:20px;flex:none}
+.youtube-mark rect{fill:currentColor}
+.youtube-mark .play{fill:var(--bg)}
+.btn:hover .youtube-mark .play{fill:var(--gold)}
+.x-mark path{fill:currentColor}
+.marshmallow-mark .outline,.marshmallow-mark .sprinkle{fill:none;stroke:#505052;stroke-width:34;stroke-linecap:round;stroke-linejoin:round}
+.marshmallow-mark .body{fill:#fff;stroke:#505052;stroke-width:38;stroke-linejoin:round}
+.marshmallow-mark .shine{fill:none;stroke:#fff;stroke-width:32;stroke-linecap:round}
+.marshmallow-mark .eye,.marshmallow-mark .mouth{fill:#505052}
+.marshmallow-mark .cheek{fill:#F8AA8D}
+.marshmallow-mark .tongue{fill:#E96D60}
+.service-mark{fill:none;stroke:currentColor;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round}
+.art{position:absolute;z-index:1;top:58px;right:-12%;bottom:-10vh;width:92%;height:auto;margin:0;transform:translate(calc(var(--px,0)*-12px),calc(var(--py,0)*-8px));transition:transform .6s ease-out}
 .art::before{content:"";position:absolute;inset:12% 0 0;background:radial-gradient(closest-side,#4B6BDB66,#0000)}
-.art img{position:relative;display:block;width:100%;height:100%;max-height:100svh;object-fit:contain;object-position:bottom;
+.art img{position:relative;display:block;width:100%;height:100%;max-height:none;object-fit:contain;object-position:bottom;
   -webkit-mask-image:linear-gradient(90deg,#0000,#000 16%,#000 84%,#0000),linear-gradient(180deg,#000 88%,#0000);
   -webkit-mask-composite:source-in;mask-composite:intersect;
   mask-image:linear-gradient(90deg,#0000,#000 16%,#000 84%,#0000),linear-gradient(180deg,#000 88%,#0000)}
 
 /* セクション共通 */
-section{padding:80px 0;border-top:1px solid var(--line);scroll-margin-top:24px}
+section{padding:80px 0;border-top:1px solid var(--line);scroll-margin-top:84px}
 h2{font-family:var(--serif);font-size:26px;letter-spacing:.08em;margin:0 0 28px;display:flex;align-items:center;gap:12px}
 h2::before{content:"";width:16px;height:16px;background:var(--gold);clip-path:polygon(50% 0,60% 40%,100% 50%,60% 60%,50% 100%,40% 60%,0 50%,40% 40%)}
 p{margin:0 0 1em;max-width:36em}
@@ -76,8 +90,9 @@ p{margin:0 0 1em;max-width:36em}
 dl{display:grid;grid-template-columns:9em 1fr;gap:10px 16px;margin:32px 0 0;max-width:36em}
 dt{color:var(--sub)} dd{margin:0}
 
-ul.links{list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:12px}
+ul.links{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:minmax(0,max-content);justify-items:start;row-gap:12px}
 ul.links a{display:inline-block;padding:10px 24px;border:1px solid var(--line);border-radius:999px;color:var(--ink);text-decoration:none;transition:border-color .25s,color .25s,box-shadow .25s}
+ul.links a.social-link{display:inline-flex;align-items:center;gap:9px}
 ul.links a:hover{border-color:var(--gold);color:var(--gold);box-shadow:0 0 24px #E2B24F44}
 .link-pending{display:inline-block;padding:10px 24px;border:1px solid var(--line);border-radius:999px;color:var(--sub)}
 .section-kicker{display:block;margin:-20px 0 24px;color:var(--sub);font-size:12px;letter-spacing:.18em;text-transform:uppercase}
@@ -93,11 +108,14 @@ ul.links a:hover{border-color:var(--gold);color:var(--gold);box-shadow:0 0 24px 
 .hash-table dd{margin:0}
 .hash-table a{color:var(--ink);text-decoration:none}
 .hash-table a:hover{color:var(--gold)}
+.contact-email{margin:4px 0 0;color:var(--gold);letter-spacing:.025em}
 .guideline-points{padding-left:1.4em;max-width:42em}
-.guideline-points li{margin:0 0 1.8em}
+.guideline-points li{margin:0 0 .8em}
 .guideline-points li:last-child{margin-bottom:0}
 .guideline-points p{margin:.25em 0 0}
 .guideline-note{margin-top:24px!important;color:var(--sub)}
+.dm-rules{padding-left:1.2em;max-width:42em}
+.dm-rules li{margin:0 0 .65em}
 .subheading{margin:40px 0 14px;font-size:19px;letter-spacing:.04em}
 footer{padding:40px 0 64px;border-top:1px solid var(--line);color:var(--sub);font-size:13px}
 footer p{max-width:none}
@@ -122,21 +140,27 @@ footer p{max-width:none}
   .js .map .node{transition:opacity .7s calc(var(--d)*.45s)}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}html{scroll-behavior:auto}}
+@media (max-width:1448px){.topbar-inner{padding:0}}
 @media (max-width:760px){
   .hero{min-height:auto;align-items:flex-start}
-  .topbar{padding:18px 20px}
+  .topbar{padding:8px 16px}
+  .topbar-inner{padding:0 8px}
+  .top-home{width:48px;height:34px}
   .topnav{gap:14px}
   .topnav a{font-size:11px}
-  .hero-in{height:auto;min-height:100svh;display:block;padding:43svh 24px 48px}
+  .hero-in{height:auto;min-height:0;display:block;padding:43svh 24px 36px}
   .art{top:44px;right:-14vw;bottom:auto;width:108vw;height:58svh}
   .art img{max-height:68svh;object-position:center top}
   .hero-text{width:min(100%,520px);padding:0}
+  .tag{color:#fff;-webkit-text-stroke:.35px #06070D;text-shadow:0 1px 3px #06070D,0 0 12px #06070D}
   h1{font-size:clamp(54px,15vw,88px);text-shadow:0 3px 28px #06070D,0 0 12px #06070D}
   .hero-text p,.hero-text .btn{position:relative;z-index:2}
   section{padding:64px 0}
   .map{height:300px}
   .node span{font-size:12px}
   dl{grid-template-columns:7em 1fr}
+  .subheading{font-size:17px;line-height:1.5}
+  .guideline-points{padding-left:1.2em}
   .footer-inner{align-items:flex-start}
   .footer-logo{width:96px;height:96px;flex:none}
   .schedule-card{grid-template-columns:112px 1fr;gap:12px;padding:10px}
@@ -148,15 +172,17 @@ footer p{max-width:none}
 
 <header class="hero">
   <nav class="topbar" aria-label="メインナビゲーション">
-    <a class="brand" href="#top">夜凪 天</a>
-    <div class="topnav"><a href="#profile">Profile</a><a href="#hashtags">Tags</a><a href="#guidelines">Guidelines</a><a href="#links">Links</a></div>
+    <div class="topbar-inner">
+      <a class="top-home" href="#top" aria-label="トップへ戻る"><img src="images/yonagi-amane-mark.png" alt="" width="64" height="44"></a>
+      <div class="topnav"><a href="#hashtags">Tags</a><a href="#guidelines">Guidelines</a><a href="#links">Links</a></div>
+    </div>
   </nav>
   <div class="hero-in" id="top">
     <div class="hero-text">
       <p class="tag">ハリネズミと天体が好きなエルフVtuber</p>
       <h1>夜凪 天</h1>
       <p class="romaji">YONAGI AMANE</p>
-      <a class="btn" href="https://www.youtube.com/@YonagiAmaneee" target="_blank" rel="noopener">YouTubeチャンネルを見る</a>
+      <a class="btn" href="https://www.youtube.com/@YonagiAmaneee" target="_blank" rel="noopener"><svg class="social-icon youtube-mark" viewBox="0 0 24 24" aria-hidden="true"><rect x="1.5" y="4" width="21" height="16" rx="5"/><path class="play" d="M10 8.25v7.5l6.25-3.75z"/></svg>YouTubeチャンネルを見る</a>
     </div>
     <figure class="art"><img src="images/amane.png" alt="夜凪 天のイラスト" width="1400" height="1466"></figure>
   </div>
@@ -176,7 +202,7 @@ footer p{max-width:none}
     <h2>二次創作におけるガイドライン</h2>
     <p>一般的なモラルを守って頂ける限り、非営利目的の範囲内で二次創作物を自由にご制作いただいて構いません。</p>
 
-    <h3 class="subheading">FAについて</h3>
+    <h3 class="subheading">ファンアートの投稿・利用について</h3>
     <ul class="guideline-points">
       <li>「夜凪天覧会」タグにあげていただいたFAについてはサムネイル等で使用させて頂く場合があります。</li>
       <li>衣装捏造について特に制限しません。<br>（むしろいろんな服装を見れて嬉しいです！）</li>
@@ -184,9 +210,12 @@ footer p{max-width:none}
       <li>絵師さんへのイラスト依頼について特に制限しません。Skeb等好きに依頼していただいて大丈夫です！</li>
     </ul>
     <p class="guideline-note">※その他不明点あればサブ垢のDM、マシュマロ等へ質問お願いします。</p>
-
-    <h3 class="subheading">リスナーさんからのDMについて</h3>
-    <p>メインアカウントのDMでは基本返信は行いません。<br>御用の際はサブアカウントまで連絡お願いします。<br>また、個人的な用(雑談等)については基本返信は行いません。</p>
+    <h3 class="subheading">DM・お問い合わせについて</h3>
+    <ul class="dm-rules">
+      <li><strong>メインアカウントのDM</strong><span>基本的に返信していません。</span></li>
+      <li><strong>ご用件がある場合</strong><span><a href="https://x.com/pakyapoppo" target="_blank" rel="noopener">サブアカウント</a>までご連絡ください。</span></li>
+      <li><strong>雑談など個人的な内容</strong><span>基本的に返信していません。</span></li>
+    </ul>
   </section>
 
   <section id="schedule">
@@ -195,18 +224,26 @@ footer p{max-width:none}
     <div class="schedule-list" id="schedule-list" aria-live="polite"><p class="schedule-state">YouTubeから配信予定を読み込み中…</p></div>
     <div id="schedule-fallback" hidden>
       <p>配信予定はYouTubeのライブ一覧で確認できます。</p>
-      <p><a class="btn" href="https://www.youtube.com/@YonagiAmaneee/streams" target="_blank" rel="noopener">YouTubeの配信予定を見る</a></p>
+      <p><a class="btn" href="https://www.youtube.com/@YonagiAmaneee/streams" target="_blank" rel="noopener"><svg class="social-icon youtube-mark" viewBox="0 0 24 24" aria-hidden="true"><rect x="1.5" y="4" width="21" height="16" rx="5"/><path class="play" d="M10 8.25v7.5l6.25-3.75z"/></svg>YouTubeの配信予定を見る</a></p>
     </div>
   </section>
 
   <section id="links">
     <h2>リンク</h2>
     <ul class="links">
-      <li><a href="https://www.youtube.com/@YonagiAmaneee" target="_blank" rel="noopener">YouTube</a></li>
-      <li><a href="https://x.com/YonagiAmaneee" target="_blank" rel="noopener">X</a></li>
-      <li><a href="mailto:yonagi.amane@gmail.com">お仕事のお問い合わせ：yonagi.amane@gmail.com</a></li>
+      <li><a class="social-link" href="https://www.youtube.com/@YonagiAmaneee" target="_blank" rel="noopener"><svg class="social-icon youtube-mark" viewBox="0 0 24 24" aria-hidden="true"><rect x="1.5" y="4" width="21" height="16" rx="5"/><path class="play" d="M10 8.25v7.5l6.25-3.75z"/></svg>YouTube</a></li>
+      <li><a class="social-link" href="https://x.com/YonagiAmaneee" target="_blank" rel="noopener"><svg class="social-icon x-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.9 1.15h3.68l-8.04 9.19L24 22.85h-7.41l-5.8-7.58-6.63 7.58H.48l8.6-9.83L0 1.15h7.59l5.24 6.93 6.07-6.93Zm-1.29 19.5h2.04L6.49 3.24H4.3l13.31 17.41Z"/></svg>X</a></li>
+      <li><a class="social-link" href="https://marshmallow-qa.com/yonagiamaneee" target="_blank" rel="noopener"><svg class="social-icon marshmallow-mark" viewBox="0 0 1000 1000" aria-hidden="true"><path class="body" d="M80 426C98 316 250 147 369 105c74-26 111 9 181 73 78 70 172 156 191 228 18 69-70 184-151 267-68 70-143 127-202 112-70-18-158-116-242-208C92 517 69 480 80 426Z"/><path class="shine" d="M159 443c105-42 251-187 273-298"/><circle class="eye" cx="493" cy="350" r="35"/><circle class="eye" cx="309" cy="534" r="35"/><circle class="cheek" cx="618" cy="401" r="43"/><circle class="cheek" cx="356" cy="661" r="43"/><path class="mouth" d="M438 572c44-31 71-75 91-104 14-20 28-13 44 7 37 47 18 103-28 131-37 23-88 25-118-4-10-10-5-22 11-30Z"/><path class="tongue" d="M476 593c13-27 36-49 65-58 8 28-20 63-58 78-10 4-13-7-7-20Z"/><path class="outline" d="m820 528 116 118m-263 56 117 116m-286 8 113 116"/></svg>マシュマロ</a></li>
+      <li><a class="social-link" href="https://yonagiamanee.booth.pm/" target="_blank" rel="noopener"><svg class="social-icon service-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l1.2 12H3.8L5 8Z"/><path d="M8 8V6.5a4 4 0 0 1 8 0V8"/><path d="M8 11v5m4-5v5m4-5v5"/></svg>グッズ販売（BOOTH）</a></li>
+      <li><a class="social-link" href="https://fansfer.p-dlt.com/7s8KxdfASiZCITAxvDb4Sxkpe7g2" target="_blank" rel="noopener"><svg class="social-icon service-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9h18v12H3zM2 6h20v3H2zM12 6v15"/><path d="M12 6H7.2a2.2 2.2 0 1 1 2.2-2.2C9.4 5 12 6 12 6Zm0 0h4.8a2.2 2.2 0 1 0-2.2-2.2C14.6 5 12 6 12 6Z"/></svg>差し入れ（Fansfer）</a></li>
+      <li><a class="social-link" href="https://x.com/pakyapoppo" target="_blank" rel="noopener"><svg class="social-icon x-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.9 1.15h3.68l-8.04 9.19L24 22.85h-7.41l-5.8-7.58-6.63 7.58H.48l8.6-9.83L0 1.15h7.59l5.24 6.93 6.07-6.93Zm-1.29 19.5h2.04L6.49 3.24H4.3l13.31 17.41Z"/></svg>サブアカウント</a></li>
       <li><a href="https://lit.link/YonagiAmaneee" target="_blank" rel="noopener">Lit.Link</a></li>
     </ul>
+  </section>
+
+  <section id="contact">
+    <h2>お仕事のお問い合わせ</h2>
+    <p class="contact-email">Mail : yonagi.amane@gmail.com</p>
   </section>
 
   <footer>
