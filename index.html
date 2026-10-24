@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>夜凪 天 -Yonagi Amane- | 公式サイト</title>
+<meta name="description" content="ハリネズミと天体が好きなエルフVtuber、夜凪 天の公式サイトです。主にゲーム配信をしています。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="夜凪 天 -Yonagi Amane- | 公式サイト">
+<meta property="og:description" content="ハリネズミと天体が好きなエルフVtuber。主にゲーム配信をしています。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#06070D; --ink:#EFEAFB; --sub:#A9AACB; --line:#2B3260;
+  --gold:#E2B24F; --cyan:#6FDCE6; --violet:#A394EE;
+  --serif:"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho",serif;
+  --sans:"Zen Kaku Gothic New","Hiragino Sans","Yu Gothic",sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.9;overflow-x:hidden}
+a{color:var(--cyan);text-underline-offset:.22em}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:2px}
+#sky{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+body::after{content:"";position:fixed;inset:0;z-index:1;pointer-events:none;
+  background:radial-gradient(460px circle at var(--cx,70%) var(--cy,30%),#6FDCE61c,#0000 65%)}
+.hero,.wrap{position:relative;z-index:2}
+.wrap{max-width:860px;margin:0 auto;padding:0 24px}
+
+/* ヒーロー */
+.hero{min-height:100vh;display:flex;align-items:center;overflow:hidden}
+.hero-in{width:100%;max-width:1200px;margin:0 auto;padding:0 24px;display:grid;grid-template-columns:1fr 1.05fr;align-items:center;gap:8px}
+.tag{margin:0 0 20px;color:var(--sub)}
+h1{font-family:var(--serif);font-weight:800;font-size:clamp(56px,9vw,116px);line-height:1.1;letter-spacing:.08em;margin:0}
+.romaji{margin:14px 0 28px;color:var(--gold);letter-spacing:.24em;font-size:14px}
+.lead{max-width:28em;margin:0 0 32px}
+.btn{display:inline-block;padding:11px 28px;border:1px solid var(--gold);color:var(--gold);text-decoration:none;font-weight:700;border-radius:999px;transition:background .25s,color .25s,box-shadow .25s}
+.btn:hover{background:var(--gold);color:var(--bg);box-shadow:0 0 28px #E2B24F66}
+.art{position:relative;margin:0;align-self:end;transform:translate(calc(var(--px,0)*-12px),calc(var(--py,0)*-8px));transition:transform .6s ease-out}
+.art::before{content:"";position:absolute;inset:12% 0 0;background:radial-gradient(closest-side,#4B6BDB66,#0000)}
+.art img{position:relative;display:block;width:100%;max-height:100vh;object-fit:contain;object-position:bottom;
+  -webkit-mask-image:linear-gradient(90deg,#0000,#000 16%,#000 84%,#0000),linear-gradient(180deg,#000 88%,#0000);
+  -webkit-mask-composite:source-in;mask-composite:intersect;
+  mask-image:linear-gradient(90deg,#0000,#000 16%,#000 84%,#0000),linear-gradient(180deg,#000 88%,#0000)}
+
+/* セクション共通 */
+section{padding:72px 0;border-top:1px solid var(--line)}
+h2{font-family:var(--serif);font-size:26px;letter-spacing:.08em;margin:0 0 28px;display:flex;align-items:center;gap:12px}
+h2::before{content:"";width:16px;height:16px;background:var(--gold);clip-path:polygon(50% 0,60% 40%,100% 50%,60% 60%,50% 100%,40% 60%,0 50%,40% 40%)}
+p{margin:0 0 1em;max-width:36em}
+
+/* 星座のプロフィール */
+.map{position:relative;height:340px;margin:8px 0 8px}
+.map svg{position:absolute;inset:0;width:100%;height:100%}
+.map polyline{fill:none;stroke:var(--violet);stroke-width:1.2;stroke-opacity:.7;vector-effect:non-scaling-stroke}
+.node{position:absolute;left:var(--x);top:var(--y);transform:translate(-50%,-50%);background:none;border:0;padding:14px;color:var(--ink);font:inherit;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px}
+.node i{display:block;width:20px;height:20px;background:var(--gold);transition:transform .3s;
+  clip-path:polygon(50% 0,60% 40%,100% 50%,60% 60%,50% 100%,40% 60%,0 50%,40% 40%)}
+.node{filter:drop-shadow(0 0 6px #E2B24F88)}
+.node:hover i,.node.on i{transform:scale(1.7) rotate(45deg)}
+.node.on{filter:drop-shadow(0 0 14px #E2B24F)}
+.node span{font-size:14px;white-space:nowrap}
+.info{min-height:5.5em;padding:6px 0 6px 16px;border-left:2px solid var(--gold)}
+.info strong{display:block;color:var(--gold);font-size:13px;letter-spacing:.1em}
+dl{display:grid;grid-template-columns:9em 1fr;gap:10px 16px;margin:32px 0 0;max-width:36em}
+dt{color:var(--sub)} dd{margin:0}
+
+ul.links{list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:12px}
+ul.links a{display:inline-block;padding:10px 24px;border:1px solid var(--line);border-radius:999px;color:var(--ink);text-decoration:none;transition:border-color .25s,color .25s,box-shadow .25s}
+ul.links a:hover{border-color:var(--gold);color:var(--gold);box-shadow:0 0 24px #E2B24F44}
+footer{padding:40px 0 64px;border-top:1px solid var(--line);color:var(--sub);font-size:13px}
+footer p{max-width:none}
+
+/* 動き(動きを減らす設定の人には出しません) */
+@media (prefers-reduced-motion:no-preference){
+  .ch{display:inline-block;white-space:pre;opacity:0;filter:blur(14px);transform:translateY(.35em);
+    animation:in 1.2s cubic-bezier(.2,.7,.2,1) forwards;animation-delay:calc(.35s + var(--i)*.16s)}
+  @keyframes in{to{opacity:1;filter:blur(0);transform:none}}
+  .js .hero-text>:not(h1){animation:up .9s 1.3s both}
+  .js .hero-text>.btn{animation-delay:1.7s}
+  @keyframes up{from{opacity:0;transform:translateY(12px)}}
+  .js .art img{animation:rise 1.8s .5s both}
+  @keyframes rise{from{opacity:0;transform:translateY(24px) scale(.98)}}
+  .art::before{animation:breathe 7s ease-in-out infinite}
+  @keyframes breathe{50%{opacity:.55}}
+  .js .map:not(.in) polyline{stroke-dasharray:1;stroke-dashoffset:1}
+  .js .map polyline{stroke-dasharray:1;transition:stroke-dashoffset 2.4s ease-out}
+  .js .map:not(.in) .node{opacity:0}
+  .js .map .node{transition:opacity .7s calc(var(--d)*.45s)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}html{scroll-behavior:auto}}
+@media (max-width:760px){
+  .hero{min-height:auto;align-items:flex-start}
+  .hero-in{grid-template-columns:1fr;gap:0;padding-top:0}
+  .art{order:-1;margin:0 -24px}
+  .art img{max-height:62vh}
+  .hero-text{padding:8px 0 56px}
+  .map{height:300px}
+  .node span{font-size:12px}
+  dl{grid-template-columns:7em 1fr}
+}
+</style>
+</head>
+<body>
+<canvas id="sky" aria-hidden="true"></canvas>
+
+<header class="hero">
+  <div class="hero-in">
+    <div class="hero-text">
+      <p class="tag">ハリネズミと天体が好きなエルフVtuber</p>
+      <h1>夜凪 天</h1>
+      <p class="romaji">YONAGI AMANE</p>
+      <p class="lead">主にゲーム配信をしています。のんびりした夜の時間を、いっしょに過ごしましょう。</p>
+      <a class="btn" href="https://www.youtube.com/@YonagiAmaneee" target="_blank" rel="noopener">YouTubeチャンネルを見る</a>
+    </div>
+    <figure class="art"><img src="images/amane.png" alt="夜凪 天のイラスト" width="1400" height="1466"></figure>
+  </div>
+</header>
+
+<div class="wrap">
+  <section id="profile">
+    <h2>プロフィール</h2>
+    <div class="map" id="map">
+      <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+        <polyline pathLength="1" points="9,68 30,28 52,62 74,24 91,64"/>
+      </svg>
+      <button class="node" style="--x:9%;--y:68%;--d:1" data-k="種族" data-v="エルフです。"><i></i><span>エルフ</span></button>
+      <button class="node" style="--x:30%;--y:28%;--d:2" data-k="好きなもの" data-v="ハリネズミが好きです。"><i></i><span>ハリネズミ</span></button>
+      <button class="node" style="--x:52%;--y:62%;--d:3" data-k="好きなもの" data-v="天体が好きです。星空を見るのも、調べるのも。"><i></i><span>天体</span></button>
+      <button class="node" style="--x:74%;--y:24%;--d:4" data-k="活動" data-v="ゲーム配信がメインです。雑談もします。"><i></i><span>ゲーム配信</span></button>
+      <button class="node" style="--x:91%;--y:64%;--d:5" data-k="活動" data-v="歌ってみたも投稿しています。"><i></i><span>歌ってみた</span></button>
+    </div>
+    <div class="info" id="info" aria-live="polite"></div>
+    <dl>
+      <dt>誕生日</dt><dd>ここに書く</dd>
+      <dt>ファンネーム</dt><dd>ここに書く</dd>
+    </dl>
+  </section>
+
+  <section id="about">
+    <h2>自己紹介</h2>
+    <p>ここに自己紹介を書きます。どんな配信をしているか、どんなゲームが好きか、どんな人に見てほしいかを2〜3文で伝えましょう。</p>
+  </section>
+
+  <section id="schedule">
+    <h2>配信のお知らせ</h2>
+    <p>ここに配信スケジュールや最新の動画を載せられます(例:毎週◯曜日の21時から配信)。</p>
+  </section>
+
+  <section id="links">
+    <h2>リンク</h2>
+    <ul class="links">
+      <li><a href="https://www.youtube.com/@YonagiAmaneee" target="_blank" rel="noopener">YouTube</a></li>
+      <li><a href="#">X(Twitter)のリンクを入れる</a></li>
+      <li><a href="#">お仕事の連絡先を入れる</a></li>
+    </ul>
+  </section>
+
+  <footer>
+    <p>Illust / Live2D:西瀬 さめ 様(@3dsamechan)<br>Logo:はるぺ 様(@harumaki03161)</p>
+    <p>&copy; 2026 夜凪 天</p>
+  </footer>
+</div>
+
+<script>
+(()=>{
+const root=document.documentElement, rm=matchMedia('(prefers-reduced-motion:reduce)').matches;
+root.classList.add('js');
+
+/* 名前を一文字ずつ登場させる */
+const h1=document.querySelector('h1');
+if(!rm){
+  const t=h1.textContent; h1.setAttribute('aria-label',t); h1.textContent='';
+  [...t].forEach((s,i)=>{const e=document.createElement('span');e.className='ch';e.setAttribute('aria-hidden','true');e.style.setProperty('--i',i);e.textContent=s;h1.append(e)});
+}
+
+/* マウスに合わせてイラストと光が動く */
+let tx=0,ty=0,mx=0,my=0,sy=scrollY;
+addEventListener('pointermove',e=>{
+  tx=e.clientX/innerWidth-.5; ty=e.clientY/innerHeight-.5;
+  root.style.setProperty('--px',tx*2); root.style.setProperty('--py',ty*2);
+  root.style.setProperty('--cx',e.clientX+'px'); root.style.setProperty('--cy',e.clientY+'px');
+},{passive:true});
+addEventListener('scroll',()=>{sy=scrollY},{passive:true});
+
+/* 星空 */
+const c=document.getElementById('sky'),g=c.getContext('2d');
+let W,H,S=[],P=[],M=null,T=2500;
+function size(){
+  const d=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;
+  c.width=W*d;c.height=H*d;g.setTransform(d,0,0,d,0,0);
+  S=Array.from({length:Math.min(170,W*H/8500|0)},()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.2+.3,z:Math.random()*.8+.2,p:Math.random()*6.3,c:Math.random()<.1?'226,178,79':'255,255,255'}));
+  P=Array.from({length:34},()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.5+.6,v:Math.random()*.25+.08,p:Math.random()*6.3}));
+  if(rm)draw(0);
+}
+function draw(t){
+  mx+=(tx-mx)*.05;my+=(ty-my)*.05;
+  g.clearRect(0,0,W,H);
+  for(const s of S){
+    const a=rm?.7:.45+.55*Math.abs(Math.sin(t*.0006*s.z+s.p));
+    const x=((s.x-mx*s.z*28)%W+W)%W, y=((s.y-sy*s.z*.12-my*s.z*28)%H+H)%H;
+    g.fillStyle=`rgba(${s.c},${a})`;g.beginPath();g.arc(x,y,s.r,0,6.283);g.fill();
+  }
+  for(const q of P){
+    if(!rm){q.y-=q.v;if(q.y<-5)q.y=H+5}
+    const x=q.x+Math.sin(t*.0005+q.p)*14, a=.2+.35*Math.sin(t*.001+q.p)**2;
+    g.fillStyle=`rgba(111,220,230,${a})`;g.beginPath();g.arc(x,q.y,q.r,0,6.283);g.fill();
+  }
+  if(!rm){
+    if(!M&&t>T){M={x:Math.random()*W*.7+W*.3,y:Math.random()*H*.35,k:0};T=t+7000+Math.random()*6000}
+    if(M){
+      M.k+=.016;const k=M.k,hx=M.x-k*520,hy=M.y+k*300,tx2=hx+120,ty2=hy-69;
+      const gr=g.createLinearGradient(tx2,ty2,hx,hy);gr.addColorStop(0,'rgba(226,178,79,0)');gr.addColorStop(1,'rgba(255,236,190,.95)');
+      g.globalAlpha=Math.sin(Math.min(k,1)*Math.PI);g.strokeStyle=gr;g.lineWidth=1.8;g.beginPath();g.moveTo(tx2,ty2);g.lineTo(hx,hy);g.stroke();g.globalAlpha=1;
+      if(k>=1)M=null;
+    }
+  }
+}
+function loop(t){draw(t);requestAnimationFrame(loop)}
+size();addEventListener('resize',size);
+if(!rm)requestAnimationFrame(loop);
+
+/* 星座のプロフィール */
+const map=document.getElementById('map'),info=document.getElementById('info'),nodes=[...map.querySelectorAll('.node')];
+function pick(n){
+  nodes.forEach(m=>m.classList.toggle('on',m===n));
+  info.innerHTML='';const k=document.createElement('strong');k.textContent=n.dataset.k;
+  info.append(k,n.dataset.v);
+}
+nodes.forEach(n=>['pointerenter','focus','click'].forEach(ev=>n.addEventListener(ev,()=>pick(n))));
+pick(nodes[1]);
+if(rm)map.classList.add('in');
+else new IntersectionObserver((es,o)=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');o.unobserve(e.target)}}),{threshold:.4}).observe(map);
+})();
+</script>
+</body>
+</html>
