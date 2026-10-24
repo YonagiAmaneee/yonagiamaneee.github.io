@@ -219,51 +219,34 @@ footer p{max-width:none}
 
 <script>
 (()=>{
-  const apiKey='AIzaSyDPuYSk8goqFcaznz_-Bq4ZEssNcsKw9-M';
-  const channelId='UC6M-0y7NSkN9VJiKPR2ZVKA';
   const list=document.getElementById('schedule-list');
   const fallback=document.getElementById('schedule-fallback');
   const formatter=new Intl.DateTimeFormat('ja-JP',{timeZone:'Asia/Tokyo',year:'numeric',month:'numeric',day:'numeric',weekday:'short',hour:'2-digit',minute:'2-digit'});
   const showMessage=message=>{fallback.hidden=true;list.replaceChildren();const p=document.createElement('p');p.className='schedule-state';p.textContent=message;list.append(p)};
-  const checkResponse=(response,data)=>{
-    if(response.ok&&!data.error)return;
-    const error=new Error(data.error?.message||'YouTube API request failed');
-    error.reason=data.error?.errors?.[0]?.reason;
-    throw error;
-  };
 
   async function loadSchedule(){
     try{
-      const searchUrl=new URL('https://www.googleapis.com/youtube/v3/search');
-      Object.entries({key:apiKey,part:'snippet',channelId,eventType:'upcoming',type:'video',order:'date',maxResults:'5'}).forEach(([key,value])=>searchUrl.searchParams.set(key,value));
-      const searchResponse=await fetch(searchUrl);
-      const searchData=await searchResponse.json();
-      checkResponse(searchResponse,searchData);
-      const ids=(searchData.items||[]).map(item=>item.id?.videoId).filter(Boolean);
-      if(!ids.length){showMessage('現在、公開されている配信予定はありません。');return}
-
-      const videosUrl=new URL('https://www.googleapis.com/youtube/v3/videos');
-      Object.entries({key:apiKey,part:'snippet,liveStreamingDetails',id:ids.join(',')}).forEach(([key,value])=>videosUrl.searchParams.set(key,value));
-      const videosResponse=await fetch(videosUrl);
-      const videosData=await videosResponse.json();
-      checkResponse(videosResponse,videosData);
-      const videos=(videosData.items||[]).sort((a,b)=>new Date(a.liveStreamingDetails?.scheduledStartTime||0)-new Date(b.liveStreamingDetails?.scheduledStartTime||0));
+      const response=await fetch(new URL('schedule.json',document.baseURI),{cache:'no-store'});
+      const data=await response.json();
+      if(data.status==='quota_exceeded'){
+        list.replaceChildren();fallback.hidden=false;return;
+      }
+      if(!response.ok||data.status!=='ok')throw new Error('Schedule data is unavailable');
+      const videos=(data.items||[]).sort((a,b)=>new Date(a.scheduledStartTime||0)-new Date(b.scheduledStartTime||0));
       list.replaceChildren();
       videos.forEach(video=>{
-        const card=document.createElement('a');card.className='schedule-card';card.href='https://www.youtube.com/watch?v='+encodeURIComponent(video.id);card.target='_blank';card.rel='noopener';
-        const image=document.createElement('img');image.src=video.snippet.thumbnails?.medium?.url||video.snippet.thumbnails?.default?.url||'';image.alt='';image.loading='lazy';
+        const card=document.createElement('a');card.className='schedule-card';card.href=video.url;card.target='_blank';card.rel='noopener';
+        const image=document.createElement('img');image.src=video.thumbnail||'';image.alt='';image.loading='lazy';
         const body=document.createElement('span');
-        const title=document.createElement('span');title.className='schedule-title';title.textContent=video.snippet.title;
+        const title=document.createElement('span');title.className='schedule-title';title.textContent=video.title;
         const time=document.createElement('span');time.className='schedule-time';
-        const start=video.liveStreamingDetails?.scheduledStartTime;time.textContent=start?formatter.format(new Date(start))+' 配信開始予定':'配信予定';
+        const start=video.scheduledStartTime;time.textContent=start?formatter.format(new Date(start))+' 配信開始予定':'配信予定';
         body.append(title,time);card.append(image,body);list.append(card);
       });
       if(!videos.length)showMessage('現在、公開されている配信予定はありません。');
     }catch(error){
-      console.error('YouTube schedule could not be loaded:',error);
-      if(['quotaExceeded','dailyLimitExceeded','dailyLimitExceededUnreg','rateLimitExceeded','userRateLimitExceeded'].includes(error.reason)){
-        list.replaceChildren();fallback.hidden=false;
-      }else showMessage('配信予定を読み込めませんでした。');
+      console.error('Schedule data could not be loaded:',error);
+      showMessage('配信予定を読み込めませんでした。');
     }
   }
   loadSchedule();
