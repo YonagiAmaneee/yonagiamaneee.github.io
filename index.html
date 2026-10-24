@@ -81,6 +81,13 @@ ul.links a{display:inline-block;padding:10px 24px;border:1px solid var(--line);b
 ul.links a:hover{border-color:var(--gold);color:var(--gold);box-shadow:0 0 24px #E2B24F44}
 .link-pending{display:inline-block;padding:10px 24px;border:1px solid var(--line);border-radius:999px;color:var(--sub)}
 .section-kicker{display:block;margin:-20px 0 24px;color:var(--sub);font-size:12px;letter-spacing:.18em;text-transform:uppercase}
+.schedule-list{display:grid;gap:14px;max-width:620px;margin:0 0 24px}
+.schedule-card{display:grid;grid-template-columns:160px 1fr;gap:18px;align-items:center;padding:14px;border:1px solid var(--line);border-radius:12px;background:#141824;color:var(--ink);text-decoration:none;transition:border-color .2s,transform .2s}
+.schedule-card:hover{border-color:var(--gold);transform:translateY(-2px)}
+.schedule-card img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;border-radius:6px;background:#202532}
+.schedule-title{display:block;font-weight:700;line-height:1.5}
+.schedule-time{display:block;margin-top:8px;color:var(--sub);font-size:13px}
+.schedule-state{color:var(--sub)}
 .hash-table{display:grid;grid-template-columns:7em 1fr;gap:8px 16px;margin:0;max-width:34em}
 .hash-table dt{color:var(--sub)}
 .hash-table dd{margin:0}
@@ -132,6 +139,7 @@ footer p{max-width:none}
   dl{grid-template-columns:7em 1fr}
   .footer-inner{align-items:flex-start}
   .footer-logo{width:96px;height:96px;flex:none}
+  .schedule-card{grid-template-columns:112px 1fr;gap:12px;padding:10px}
 }
 </style>
 </head>
@@ -148,7 +156,6 @@ footer p{max-width:none}
       <p class="tag">ハリネズミと天体が好きなエルフVtuber</p>
       <h1>夜凪 天</h1>
       <p class="romaji">YONAGI AMANE</p>
-      <p class="lead">主にゲーム配信をしています。のんびりした夜の時間を、いっしょに過ごしましょう。</p>
       <a class="btn" href="https://www.youtube.com/@YonagiAmaneee" target="_blank" rel="noopener">YouTubeチャンネルを見る</a>
     </div>
     <figure class="art"><img src="images/amane.png" alt="夜凪 天のイラスト" width="1400" height="1466"></figure>
@@ -156,27 +163,6 @@ footer p{max-width:none}
 </header>
 
 <div class="wrap">
-  <section id="profile">
-    <h2>プロフィール</h2>
-    <span class="section-kicker">A little about me</span>
-    <div class="map" id="map">
-      <svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-        <polyline pathLength="1" points="9,68 30,28 52,62 74,24 91,64"/>
-      </svg>
-      <button class="node" style="--x:9%;--y:68%;--d:1" data-k="種族" data-v="エルフです。"><i></i><span>エルフ</span></button>
-      <button class="node" style="--x:30%;--y:28%;--d:2" data-k="好きなもの" data-v="ハリネズミが好きです。"><i></i><span>ハリネズミ</span></button>
-      <button class="node" style="--x:52%;--y:62%;--d:3" data-k="好きなもの" data-v="天体が好きです。星空を見るのも、調べるのも。"><i></i><span>天体</span></button>
-      <button class="node" style="--x:74%;--y:24%;--d:4" data-k="活動" data-v="ゲーム配信がメインです。雑談もします。"><i></i><span>ゲーム配信</span></button>
-      <button class="node" style="--x:91%;--y:64%;--d:5" data-k="活動" data-v="歌ってみたも投稿しています。"><i></i><span>歌ってみた</span></button>
-    </div>
-    <div class="info" id="info" aria-live="polite"></div>
-  </section>
-
-  <section id="about">
-    <h2>自己紹介</h2>
-    <p>夜のひとときに、星空やゲームの話をしながらゆっくり過ごしています。配信で見かけたら、気軽に声をかけてくださいね。</p>
-  </section>
-
   <section id="hashtags">
     <h2>ハッシュタグ</h2>
     <dl class="hash-table">
@@ -206,17 +192,20 @@ footer p{max-width:none}
   <section id="schedule">
     <h2>配信のお知らせ</h2>
     <span class="section-kicker">Streaming schedule</span>
-    <p>配信予定はYouTubeのライブ一覧で確認できます。</p>
-    <p><a class="btn" href="https://www.youtube.com/@YonagiAmaneee/streams" target="_blank" rel="noopener">YouTubeの配信予定を見る</a></p>
+    <div class="schedule-list" id="schedule-list" aria-live="polite"><p class="schedule-state">YouTubeから配信予定を読み込み中…</p></div>
+    <div id="schedule-fallback" hidden>
+      <p>配信予定はYouTubeのライブ一覧で確認できます。</p>
+      <p><a class="btn" href="https://www.youtube.com/@YonagiAmaneee/streams" target="_blank" rel="noopener">YouTubeの配信予定を見る</a></p>
+    </div>
   </section>
 
   <section id="links">
     <h2>リンク</h2>
     <ul class="links">
       <li><a href="https://www.youtube.com/@YonagiAmaneee" target="_blank" rel="noopener">YouTube</a></li>
-      <li><a href="https://lit.link/YonagiAmaneee" target="_blank" rel="noopener">Lit.Link</a></li>
-      <li><a href="https://x.com/YonagiAmaneee" target="_blank" rel="noopener">X（お知らせ・日常）</a></li>
+      <li><a href="https://x.com/YonagiAmaneee" target="_blank" rel="noopener">X</a></li>
       <li><a href="mailto:yonagi.amane@gmail.com">お仕事のお問い合わせ：yonagi.amane@gmail.com</a></li>
+      <li><a href="https://lit.link/YonagiAmaneee" target="_blank" rel="noopener">Lit.Link</a></li>
     </ul>
   </section>
 
@@ -227,6 +216,59 @@ footer p{max-width:none}
     </div>
   </footer>
 </div>
+
+<script>
+(()=>{
+  const apiKey='AIzaSyDPuYSk8goqFcaznz_-Bq4ZEssNcsKw9-M';
+  const channelId='UC6M-0y7NSkN9VJiKPR2ZVKA';
+  const list=document.getElementById('schedule-list');
+  const fallback=document.getElementById('schedule-fallback');
+  const formatter=new Intl.DateTimeFormat('ja-JP',{timeZone:'Asia/Tokyo',year:'numeric',month:'numeric',day:'numeric',weekday:'short',hour:'2-digit',minute:'2-digit'});
+  const showMessage=message=>{fallback.hidden=true;list.replaceChildren();const p=document.createElement('p');p.className='schedule-state';p.textContent=message;list.append(p)};
+  const checkResponse=(response,data)=>{
+    if(response.ok&&!data.error)return;
+    const error=new Error(data.error?.message||'YouTube API request failed');
+    error.reason=data.error?.errors?.[0]?.reason;
+    throw error;
+  };
+
+  async function loadSchedule(){
+    try{
+      const searchUrl=new URL('https://www.googleapis.com/youtube/v3/search');
+      Object.entries({key:apiKey,part:'snippet',channelId,eventType:'upcoming',type:'video',order:'date',maxResults:'5'}).forEach(([key,value])=>searchUrl.searchParams.set(key,value));
+      const searchResponse=await fetch(searchUrl);
+      const searchData=await searchResponse.json();
+      checkResponse(searchResponse,searchData);
+      const ids=(searchData.items||[]).map(item=>item.id?.videoId).filter(Boolean);
+      if(!ids.length){showMessage('現在、公開されている配信予定はありません。');return}
+
+      const videosUrl=new URL('https://www.googleapis.com/youtube/v3/videos');
+      Object.entries({key:apiKey,part:'snippet,liveStreamingDetails',id:ids.join(',')}).forEach(([key,value])=>videosUrl.searchParams.set(key,value));
+      const videosResponse=await fetch(videosUrl);
+      const videosData=await videosResponse.json();
+      checkResponse(videosResponse,videosData);
+      const videos=(videosData.items||[]).sort((a,b)=>new Date(a.liveStreamingDetails?.scheduledStartTime||0)-new Date(b.liveStreamingDetails?.scheduledStartTime||0));
+      list.replaceChildren();
+      videos.forEach(video=>{
+        const card=document.createElement('a');card.className='schedule-card';card.href='https://www.youtube.com/watch?v='+encodeURIComponent(video.id);card.target='_blank';card.rel='noopener';
+        const image=document.createElement('img');image.src=video.snippet.thumbnails?.medium?.url||video.snippet.thumbnails?.default?.url||'';image.alt='';image.loading='lazy';
+        const body=document.createElement('span');
+        const title=document.createElement('span');title.className='schedule-title';title.textContent=video.snippet.title;
+        const time=document.createElement('span');time.className='schedule-time';
+        const start=video.liveStreamingDetails?.scheduledStartTime;time.textContent=start?formatter.format(new Date(start))+' 配信開始予定':'配信予定';
+        body.append(title,time);card.append(image,body);list.append(card);
+      });
+      if(!videos.length)showMessage('現在、公開されている配信予定はありません。');
+    }catch(error){
+      console.error('YouTube schedule could not be loaded:',error);
+      if(['quotaExceeded','dailyLimitExceeded','dailyLimitExceededUnreg','rateLimitExceeded','userRateLimitExceeded'].includes(error.reason)){
+        list.replaceChildren();fallback.hidden=false;
+      }else showMessage('配信予定を読み込めませんでした。');
+    }
+  }
+  loadSchedule();
+})();
+</script>
 
 <script>
 (()=>{
