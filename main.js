@@ -2,68 +2,184 @@
 const root=document.documentElement, rm=matchMedia('(prefers-reduced-motion:reduce)').matches;
 root.classList.add('js');
 
-/* 名前を一文字ずつ登場させる */
-const h1=document.querySelector('h1');
-if(!rm){
-  const t=h1.textContent; h1.setAttribute('aria-label',t); h1.textContent='';
-  [...t].forEach((s,i)=>{const e=document.createElement('span');e.className='ch';e.setAttribute('aria-hidden','true');e.style.setProperty('--i',i);e.textContent=s;h1.append(e)});
+/* 開いたときのロゴアニメーション (流れは style.css の説明を参照)。終わったらヒーローの登場アニメーション (.play) へ */
+const play=()=>root.classList.add('play');
+const scr=document.querySelector('.intro-screen');
+if(root.classList.contains('intro')&&scr){
+  let out=false;
+  const finish=()=>{
+    if(out)return;out=true;
+    /* 立ち絵や文字はロゴアニメーション中は隠してあり (style.css)、画面が溶けきる少し前からふわっと出す */
+    root.classList.add('intro-out');setTimeout(play,450);
+    try{sessionStorage.setItem('intro','1')}catch{}
+    setTimeout(()=>{scr.remove();root.classList.remove('intro','intro-go','intro-out')},950);
+  };
+  const go=()=>{if(out||root.classList.contains('intro-go'))return;root.classList.add('intro-go');setTimeout(finish,2900)};
+  /* 3枚の画像が読めてから始める。遅いときも1.5秒で始める */
+  Promise.all([...scr.querySelectorAll('img')].map(i=>i.decode?i.decode().catch(()=>{}):null)).then(go);
+  setTimeout(go,1500);
+  scr.addEventListener('click',finish);
+  addEventListener('keydown',finish,{once:true});
+}else play();
+
+/* ナビ: スクロールしたら背景を濃くし、今いる項目を光らせる */
+const nav=document.querySelector('.nav'), links=[...document.querySelectorAll('.nav-links a')];
+const onScroll=()=>nav.classList.toggle('scrolled',scrollY>40);
+onScroll();addEventListener('scroll',onScroll,{passive:true});
+const sections=links.map(a=>document.querySelector(a.hash)).filter(Boolean);
+const seen=new Map();
+const spy=new IntersectionObserver(es=>{
+  es.forEach(e=>seen.set(e.target,e.isIntersecting));
+  const cur=sections.find(s=>seen.get(s));
+  links.forEach(a=>a.classList.toggle('on',!!cur&&a.hash==='#'+cur.id));
+},{rootMargin:'-45% 0px -50% 0px'});
+sections.forEach(s=>spy.observe(s));
+
+/* 項目がふわっと出てくる */
+const reveals=document.querySelectorAll('.reveal');
+if(rm||!('IntersectionObserver' in window))reveals.forEach(r=>r.classList.add('in'));
+else{
+  const io=new IntersectionObserver((es,o)=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');o.unobserve(e.target)}}),{threshold:.12});
+  reveals.forEach(r=>io.observe(r));
 }
 
-/* マウスに合わせてイラストと光が動く */
+/* メールアドレスをコピー */
+document.querySelectorAll('[data-copy]').forEach(b=>b.addEventListener('click',async()=>{
+  try{await navigator.clipboard.writeText(b.dataset.copy)}catch{return}
+  const t=b.textContent;b.textContent='コピーしました';b.classList.add('done');
+  setTimeout(()=>{b.textContent=t;b.classList.remove('done')},1800);
+}));
+
+/* 星座盤 (ホロスコープ風): 金の細い線の多重円。外側 (目盛り・12星座の記号) と内側 (12分割・放射線・星形) が逆向きにゆっくり回る。
+   記号は12星座のみで、数字やアルファベットは入れない */
+const wOut=document.getElementById('wheel-outer'), wIn=document.getElementById('wheel-inner');
+if(wOut&&wIn){
+  const NS='http://www.w3.org/2000/svg', D=Math.PI/180;
+  const P=(r,deg)=>[(r*Math.sin(deg*D)).toFixed(2),(-r*Math.cos(deg*D)).toFixed(2)];
+  const add=(g,tag,attrs,cls)=>{const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(cls)e.setAttribute('class',cls);g.append(e);return e};
+  const ring=(g,r,cls)=>add(g,'circle',{r},cls);
+  const spoke=(g,r1,r2,deg,cls)=>{const[a,b]=P(r1,deg),[c,d]=P(r2,deg);return add(g,'line',{x1:a,y1:b,x2:c,y2:d},cls)};
+  const sparkle=(g,r,deg,s,cls)=>{const[x,y]=P(r,deg);add(g,'path',{d:`M${x} ${+y-s}Q${x} ${y} ${+x+s} ${y}Q${x} ${y} ${x} ${+y+s}Q${x} ${y} ${+x-s} ${y}Q${x} ${y} ${x} ${+y-s}Z`},cls)};
+
+  /* 外側: 二重の縁、細かい目盛り、12星座の帯 */
+  [194,189,181].forEach(r=>ring(wOut,r,'w-ring'));
+  for(let a=0;a<360;a+=2)spoke(wOut,a%10?184:178,189,a,a%10?'w-tick':'w-tick major');
+  ring(wOut,176,'w-ring');
+  for(let k=0;k<12;k++){
+    spoke(wOut,146,176,k*30,'w-ring');
+    const deg=-(k*30+15), [x,y]=P(161,deg); /* 本来のホロスコープと同じく反時計回りに おひつじ→おうし→… */
+    const t=add(wOut,'text',{x,y,transform:`rotate(${deg} ${x} ${y})`},'w-sign');
+    t.textContent=String.fromCodePoint(0x2648+k)+'\uFE0E';
+  }
+  ring(wOut,146,'w-ring');ring(wOut,142,'w-ring thin');
+  /* 光の点 */
+  [[189,40,4],[146,160,3.2],[176,250,3.6],[194,312,2.8]].forEach(([r,a,s])=>sparkle(wOut,r,a,s*2.2,'w-light'));
+
+  /* 内側: 12分割の帯、星形の結び線、放射線、中心 */
+  for(let k=0;k<12;k++){
+    spoke(wIn,112,142,k*30+15,'w-ring');
+    sparkle(wIn,127,k*30,k%3?2.2:3.4,'w-mark');
+    const[x,y]=P(127,k*30+15);add(wIn,'circle',{cx:x,cy:y,r:1.1},'w-dot');
+  }
+  ring(wIn,112,'w-ring');ring(wIn,96,'w-ring dash');
+  /* 真ん中は控えめに: 12本の線は内側の輪 (r=66) までで止め、中心は小さな輪と点と星だけ (多いとやかましく、無いとさみしい) */
+  for(let k=0;k<12;k++)spoke(wIn,66,112,k*30,"w-ring thin");
+  ring(wIn,66,"w-ring thin");
+  ring(wIn,30,"w-ring thin");
+  for(let k=0;k<8;k++){const[x,y]=P(46,k*45+22.5);add(wIn,"circle",{cx:x,cy:y,r:.9},"w-dot")}
+  sparkle(wIn,0,0,7,"w-light soft");
+  [[96,205,3.4],[112,330,2.6]].forEach(([r,a,s])=>sparkle(wIn,r,a,s*2.2,'w-light'));
+}
+
+/* マウスに合わせて星空がわずかに流れる (立ち絵は動かさない) */
 let tx=0,ty=0,mx=0,my=0,sy=scrollY;
-addEventListener('pointermove',e=>{
-  tx=e.clientX/innerWidth-.5; ty=e.clientY/innerHeight-.5;
-  root.style.setProperty('--px',tx*2); root.style.setProperty('--py',ty*2);
-  root.style.setProperty('--cx',e.clientX+'px'); root.style.setProperty('--cy',e.clientY+'px');
-},{passive:true});
+if(!rm&&matchMedia('(pointer:fine)').matches){
+  addEventListener('pointermove',e=>{tx=e.clientX/innerWidth-.5;ty=e.clientY/innerHeight-.5},{passive:true});
+}
 addEventListener('scroll',()=>{sy=scrollY},{passive:true});
 
 /* 星空 */
-const c=document.getElementById('sky'),g=c.getContext('2d');
-let W,H,S=[],P=[],M=null,T=2500;
+const c=document.getElementById('stars'),g=c.getContext('2d');
+let W,H,S=[],M=null,T=3000;
+const COLORS=['255,255,255','255,255,255','255,255,255','207,228,255','243,203,114','139,242,228'];
 function size(){
   const d=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;
   c.width=W*d;c.height=H*d;g.setTransform(d,0,0,d,0,0);
-  S=Array.from({length:Math.min(170,W*H/8500|0)},()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.2+.3,z:Math.random()*.8+.2,p:Math.random()*6.3,c:Math.random()<.1?'226,178,79':'255,255,255'}));
-  P=Array.from({length:34},()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.5+.6,v:Math.random()*.25+.08,p:Math.random()*6.3}));
+  S=Array.from({length:Math.min(220,W*H/6500|0)},()=>{
+    const big=Math.random()<.06;
+    return{x:Math.random()*W,y:Math.random()*H,r:big?Math.random()*2+2.2:Math.random()*1.1+.3,z:Math.random()*.8+.2,
+      p:Math.random()*6.3,s:Math.random()*.8+.4,big,c:big?COLORS[3+(Math.random()*3|0)]:COLORS[Math.random()*COLORS.length|0]};
+  });
   if(rm)draw(0);
 }
-function draw(t){
-  mx+=(tx-mx)*.05;my+=(ty-my)*.05;
-  g.clearRect(0,0,W,H);
-  for(const s of S){
-    const a=rm?.7:.45+.55*Math.abs(Math.sin(t*.0006*s.z+s.p));
-    const x=((s.x-mx*s.z*28)%W+W)%W, y=((s.y-sy*s.z*.12-my*s.z*28)%H+H)%H;
-    g.fillStyle=`rgba(${s.c},${a})`;g.beginPath();g.arc(x,y,s.r,0,6.283);g.fill();
+/* 星座: 実際の赤経(時)・赤緯(度)から形を作る。at は置き場所 (横は画面幅、縦は画面2枚分の空に対する割合) */
+const CONS=[
+  {jp:'北斗七星',en:'URSA MAJOR',at:[.8,1.3],
+   s:[[11.062,61.75],[11.031,56.38],[11.897,53.69],[12.257,57.03],[12.901,55.96],[13.399,54.93],[13.792,49.31]],
+   l:[[0,1],[1,2],[2,3],[3,0],[3,4],[4,5],[5,6]]},
+  {jp:'カシオペヤ座',en:'CASSIOPEIA',at:[.86,.62],
+   s:[[0.153,59.15],[0.675,56.54],[0.945,60.72],[1.430,60.24],[1.907,63.67]],
+   l:[[0,1],[1,2],[2,3],[3,4]]},
+  {jp:'オリオン座',en:'ORION',at:[.1,.98],
+   s:[[5.919,7.41],[5.419,6.35],[5.679,-1.94],[5.604,-1.2],[5.533,-.3],[5.796,-9.67],[5.242,-8.2],[5.586,9.93]],
+   l:[[0,1],[0,2],[1,4],[2,3],[3,4],[2,5],[4,6],[7,0],[7,1]]},
+  {jp:'はくちょう座',en:'CYGNUS',at:[.12,1.72],
+   s:[[20.691,45.28],[20.371,40.26],[19.512,27.96],[20.770,33.97],[19.749,45.13]],
+   l:[[0,1],[1,2],[4,1],[1,3]]},
+].map(k=>{
+  const ra0=k.s.reduce((a,p)=>a+p[0],0)/k.s.length, de0=k.s.reduce((a,p)=>a+p[1],0)/k.s.length, cd=Math.cos(de0*Math.PI/180);
+  /* 空を見上げた向き: 東(赤経が大きい方)が左 */
+  return{...k,p:k.s.map(([ra,de])=>[-(ra-ra0)*15*cd,-(de-de0)])};
+});
+function drawSky(){
+  const deg=Math.min(W,1000)/62, band=H*2;
+  /* 星図の座標線: 画面の外にある天の北極を中心にした赤緯の円と、15°ごとの赤経の線 */
+  const px=W*1.05-mx*10, py=-H*.35-((sy*.05)%140)-my*8;
+  g.save();g.strokeStyle='rgba(185,168,255,.07)';g.lineWidth=1;g.setLineDash([2,6]);
+  const R=Math.hypot(W+Math.abs(px),H*1.4+Math.abs(py));
+  for(let r=140;r<R;r+=140){g.beginPath();g.arc(px,py,r,0,6.283);g.stroke()}
+  for(let a=0;a<360;a+=15){const t=a*Math.PI/180;g.beginPath();g.moveTo(px,py);g.lineTo(px+Math.cos(t)*R,py+Math.sin(t)*R);g.stroke()}
+  g.restore();
+  /* 星座の線と星 (名前などの文字は入れない) */
+  for(const k of CONS){
+    const cx=k.at[0]*W-mx*14, cy=((k.at[1]*H-sy*.12-my*10)%band+band)%band;
+    if(cy<-300||cy>H+300)continue;
+    const pts=k.p.map(([x,y])=>[cx+x*deg,cy+y*deg]);
+    g.strokeStyle='rgba(185,168,255,.28)';g.lineWidth=1;g.beginPath();
+    for(const[a,b]of k.l){g.moveTo(...pts[a]);g.lineTo(...pts[b])}
+    g.stroke();
+    g.fillStyle='rgba(240,236,255,.85)';
+    for(const[x,y]of pts){g.beginPath();g.arc(x,y,1.7,0,6.283);g.fill()}
   }
-  for(const q of P){
-    if(!rm){q.y-=q.v;if(q.y<-5)q.y=H+5}
-    const x=q.x+Math.sin(t*.0005+q.p)*14, a=.2+.35*Math.sin(t*.001+q.p)**2;
-    g.fillStyle=`rgba(111,220,230,${a})`;g.beginPath();g.arc(x,q.y,q.r,0,6.283);g.fill();
+}
+function sparkle(x,y,r){
+  g.beginPath();g.moveTo(x,y-r*2.4);g.quadraticCurveTo(x,y,x+r*2.4,y);g.quadraticCurveTo(x,y,x,y+r*2.4);g.quadraticCurveTo(x,y,x-r*2.4,y);g.quadraticCurveTo(x,y,x,y-r*2.4);g.fill();
+}
+function draw(t){
+  mx+=(tx-mx)*.04;my+=(ty-my)*.04;
+  g.clearRect(0,0,W,H);
+  drawSky();
+  for(const s of S){
+    const tw=rm?.8:.5+.5*Math.sin(t*.001*s.s+s.p);
+    const x=((s.x-mx*s.z*18)%W+W)%W, y=((s.y-sy*s.z*.08-my*s.z*12)%H+H)%H;
+    g.fillStyle=`rgba(${s.c},${.25+.7*tw})`;
+    if(s.big){g.shadowColor=`rgba(${s.c},.8)`;g.shadowBlur=8;sparkle(x,y,s.r*(.7+.3*tw));g.shadowBlur=0}
+    else{g.beginPath();g.arc(x,y,s.r,0,6.283);g.fill()}
   }
   if(!rm){
-    if(!M&&t>T){M={x:Math.random()*W*.7+W*.3,y:Math.random()*H*.35,k:0};T=t+7000+Math.random()*6000}
+    if(!M&&t>T){M={x:Math.random()*W*.6+W*.4,y:Math.random()*H*.3,k:0};T=t+8000+Math.random()*8000}
     if(M){
-      M.k+=.016;const k=M.k,hx=M.x-k*520,hy=M.y+k*300,tx2=hx+120,ty2=hy-69;
-      const gr=g.createLinearGradient(tx2,ty2,hx,hy);gr.addColorStop(0,'rgba(226,178,79,0)');gr.addColorStop(1,'rgba(255,236,190,.95)');
-      g.globalAlpha=Math.sin(Math.min(k,1)*Math.PI);g.strokeStyle=gr;g.lineWidth=1.8;g.beginPath();g.moveTo(tx2,ty2);g.lineTo(hx,hy);g.stroke();g.globalAlpha=1;
+      M.k+=.014;const k=M.k,hx=M.x-k*560,hy=M.y+k*240,ex=hx+150,ey=hy-64;
+      const gr=g.createLinearGradient(ex,ey,hx,hy);gr.addColorStop(0,'rgba(139,242,228,0)');gr.addColorStop(1,'rgba(240,250,255,.95)');
+      g.globalAlpha=Math.sin(Math.min(k,1)*Math.PI);g.strokeStyle=gr;g.lineWidth=1.6;g.lineCap='round';
+      g.beginPath();g.moveTo(ex,ey);g.lineTo(hx,hy);g.stroke();g.globalAlpha=1;
       if(k>=1)M=null;
     }
   }
 }
 function loop(t){draw(t);requestAnimationFrame(loop)}
-size();addEventListener('resize',size);
+size();
+if(rm&&document.fonts)document.fonts.ready.then(()=>draw(0));
+let rz;addEventListener('resize',()=>{clearTimeout(rz);rz=setTimeout(size,150)});
 if(!rm)requestAnimationFrame(loop);
-
-/* 星座のプロフィール */
-const map=document.getElementById('map'),info=document.getElementById('info'),nodes=[...map.querySelectorAll('.node')];
-function pick(n){
-  nodes.forEach(m=>m.classList.toggle('on',m===n));
-  info.innerHTML='';const k=document.createElement('strong');k.textContent=n.dataset.k;
-  info.append(k,n.dataset.v);
-}
-nodes.forEach(n=>['pointerenter','focus','click'].forEach(ev=>n.addEventListener(ev,()=>pick(n))));
-pick(nodes[1]);
-if(rm)map.classList.add('in');
-else new IntersectionObserver((es,o)=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');o.unobserve(e.target)}}),{threshold:.4}).observe(map);
 })();

@@ -2,106 +2,185 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>夜凪 天 -Yonagi Amane- | 公式サイト</title>
 <meta name="description" content="ハリネズミと天体が好きなエルフVtuber、夜凪 天の公式サイトです。主にゲーム配信をしています。">
+<meta name="theme-color" content="#070A24">
 <meta property="og:type" content="website">
 <meta property="og:title" content="夜凪 天 -Yonagi Amane- | 公式サイト">
 <meta property="og:description" content="ハリネズミと天体が好きなエルフVtuber。主にゲーム配信をしています。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Symbols&text=%E2%99%88%E2%99%89%E2%99%8A%E2%99%8B%E2%99%8C%E2%99%8D%E2%99%8E%E2%99%8F%E2%99%90%E2%99%91%E2%99%92%E2%99%93%EF%B8%8E&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="images/amane.webp" type="image/webp">
 <link rel="stylesheet" href="style.css">
+<script>/* 開いたときのロゴアニメーション: このタブで初めてのときだけ。動きを減らす設定の人には出さない */try{if(!sessionStorage.getItem("intro")&&!matchMedia("(prefers-reduced-motion:reduce)").matches)document.documentElement.classList.add("intro")}catch(e){}</script>
 </head>
 <body>
-<canvas id="sky" aria-hidden="true"></canvas>
-
-<header class="hero">
-  <nav class="topbar" aria-label="メインナビゲーション">
-    <div class="topbar-inner">
-      <a class="top-home" href="#top" aria-label="トップへ戻る"><img src="images/yonagi-amane-mark.png" alt="" width="64" height="44"></a>
-      <div class="topnav"><a href="#hashtags">Tags</a><a href="#guidelines">Guidelines</a><a href="#schedule">Schedule</a><a href="#links">Links</a><a href="#contact">Contact</a></div>
-    </div>
-  </nav>
-  <div class="hero-in" id="top">
-    <div class="hero-text">
-      <p class="tag">ハリネズミと天体が好きなエルフVtuber</p>
-      <h1>夜凪 天</h1>
-      <p class="romaji">YONAGI AMANE</p>
-      <a class="btn" href="https://www.youtube.com/@YonagiAmaneee" target="_blank" rel="noopener"><svg class="social-icon youtube-mark" viewBox="0 0 24 24" aria-hidden="true"><rect x="1.5" y="4" width="21" height="16" rx="5"/><path class="play" d="M10 8.25v7.5l6.25-3.75z"/></svg>YouTubeチャンネルを見る</a>
-    </div>
-    <figure class="art"><img src="images/amane.png" alt="夜凪 天のイラスト" width="1400" height="1466"></figure>
+<div class="intro-screen" aria-hidden="true">
+  <div class="intro-logo">
+    <img class="il-planet" src="images/intro-planet.webp" alt="" width="1255" height="1268">
+    <img class="il-word" src="images/intro-word.webp" alt="" width="1255" height="1268">
+    <img class="il-hog" src="images/intro-hog.webp" alt="" width="1255" height="1268">
   </div>
+</div>
+<div class="sky" aria-hidden="true"></div>
+<canvas id="stars" aria-hidden="true"></canvas>
+
+<nav class="nav" aria-label="メインナビゲーション">
+  <a class="nav-home" href="#top"><img src="images/yonagi-amane-mark.png" alt="トップへ戻る" width="1116" height="618"></a>
+  <div class="nav-links">
+    <a href="#schedule">Schedule</a>
+    <a href="#links">Links</a>
+    <a href="#hashtags">Tags</a>
+    <a href="#guidelines">Guideline</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="aurora" aria-hidden="true"></div>
+
+  <div class="stage">
+    <svg class="chart" viewBox="-200 -200 400 400" aria-hidden="true">
+      <defs>
+        <radialGradient id="chart-bg">
+          <stop offset="0" stop-color="#6A4FC8" stop-opacity=".55"/>
+          <stop offset=".45" stop-color="#3A2F96" stop-opacity=".45"/>
+          <stop offset=".9" stop-color="#1B1F66" stop-opacity=".35"/>
+          <stop offset="1" stop-color="#1B1F66" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <circle r="200" fill="url(#chart-bg)"/>
+      <g class="wheel-out" id="wheel-outer"></g>
+      <g class="wheel-in" id="wheel-inner"></g>
+    </svg>
+    <img class="art" src="images/amane.webp" alt="夜凪 天のイラスト" width="1400" height="1466" fetchpriority="high">
+    <img class="reflect" src="images/amane.webp" alt="" width="1400" height="1466" aria-hidden="true">
+  </div>
+
+  <div class="sea" aria-hidden="true"><span class="glint"></span></div>
+
+  <div class="hero-copy">
+    <p class="kicker">ハリネズミと天体が好きなエルフVtuber</p>
+    <h1><img src="images/yonagi-amane-logo.png" alt="夜凪 天 Yonagi Amane" width="1255" height="1268"></h1>
+    <p class="lead">主にゲーム配信をしています。</p>
+    <div class="cta">
+      <a class="btn btn-main" href="https://www.youtube.com/@YonagiAmaneee" target="_blank" rel="noopener"><svg class="icon youtube-mark" viewBox="0 0 24 24" aria-hidden="true"><rect x="1.5" y="4" width="21" height="16" rx="5"/><path class="play" d="M10 8.25v7.5l6.25-3.75z"/></svg>YouTubeチャンネル</a>
+      <a class="btn btn-sub" href="https://x.com/YonagiAmaneee" target="_blank" rel="noopener"><svg class="icon x-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.9 1.15h3.68l-8.04 9.19L24 22.85h-7.41l-5.8-7.58-6.63 7.58H.48l8.6-9.83L0 1.15h7.59l5.24 6.93 6.07-6.93Zm-1.29 19.5h2.04L6.49 3.24H4.3l13.31 17.41Z"/></svg>X をフォロー</a>
+    </div>
+  </div>
+
+  <a class="scroll-cue" href="#schedule"><span>Scroll</span></a>
 </header>
 
-<div class="wrap">
-  <section id="hashtags">
-    <h2>ハッシュタグ</h2>
-    <dl class="hash-table">
-      <dt>FA</dt><dd>▶ <a href="https://x.com/search?q=%23%E5%A4%9C%E5%87%AA%E5%A4%A9%E8%A6%A7%E4%BC%9A" target="_blank" rel="noopener">#夜凪天覧会</a></dd>
-      <dt>エゴサ</dt><dd>▶ <a href="https://x.com/search?q=%23%E3%81%B1%E3%81%8D%E3%82%83%E3%81%BD%E3%81%BF%E3%81%A6" target="_blank" rel="noopener">#ぱきゃぽみて</a></dd>
-      <dt>切り抜き</dt><dd>▶ <a href="https://x.com/search?q=%23%E3%82%88%E3%81%AA%E3%81%8E%E3%82%8A" target="_blank" rel="noopener">#よなぎり</a></dd>
-    </dl>
-  </section>
+<main class="wrap">
 
-  <section id="guidelines">
-    <h2>二次創作におけるガイドライン</h2>
-    <p>一般的なモラルを守って頂ける限り、非営利目的の範囲内で二次創作物を自由にご制作いただいて構いません。</p>
-
-    <h3 class="subheading">ファンアートの投稿・利用について</h3>
-    <ul class="guideline-points">
-      <li>「夜凪天覧会」タグにあげていただいたFAについてはサムネイル等で使用させて頂く場合があります。</li>
-      <li>衣装捏造について特に制限しません。<br>（むしろいろんな服装を見れて嬉しいです！）</li>
-      <li>R18イラストについては乗せる場合「夜凪天覧会」タグではなく「ぱきゃぽみて」タグに投稿お願いします。<br>（こちらからRPすることはないですが本人は喜んで見ます！）</li>
-      <li>絵師さんへのイラスト依頼について特に制限しません。Skeb等好きに依頼していただいて大丈夫です！</li>
-    </ul>
-    <p class="guideline-note">※その他不明点あればサブ垢のDM、マシュマロ等へ質問お願いします。</p>
-    <h3 class="subheading">リスナーさんからのDMについて</h3>
-    <ul class="dm-rules">
-      <li><strong>メインアカウントのDM</strong><span>は基本的に返信していません。</span></li>
-      <li><strong>ご用件がある場合</strong><span>は<a href="https://x.com/pakyapoppo" target="_blank" rel="noopener">サブアカウント</a>までご連絡ください。</span></li>
-      <li><strong>雑談などの個人的な内容</strong><span>は基本的に返信していません。</span></li>
-    </ul>
-  </section>
-
-  <section id="schedule">
-    <h2>配信のお知らせ</h2>
-    <span class="section-kicker">Streaming schedule</span>
-    <div class="schedule-list" id="schedule-list" aria-live="polite"><p class="schedule-state">YouTubeから配信予定を読み込み中…</p></div>
-    <div id="schedule-fallback" hidden>
+  <section id="schedule" class="reveal">
+    <div class="sec-head">
+      <p class="sec-en" aria-hidden="true">Schedule</p>
+      <h2>配信のお知らせ</h2>
+    </div>
+    <div class="live-list" id="schedule-list" aria-live="polite"><p class="schedule-state">YouTubeから配信予定を読み込み中…</p></div>
+    <div class="schedule-fallback" id="schedule-fallback" hidden>
       <p>配信予定はYouTubeのライブ一覧で確認できます。</p>
-      <p><a class="btn" href="https://www.youtube.com/@YonagiAmaneee/streams" target="_blank" rel="noopener"><svg class="social-icon youtube-mark" viewBox="0 0 24 24" aria-hidden="true"><rect x="1.5" y="4" width="21" height="16" rx="5"/><path class="play" d="M10 8.25v7.5l6.25-3.75z"/></svg>YouTubeの配信予定を見る</a></p>
     </div>
+    <p class="more"><a href="https://www.youtube.com/@YonagiAmaneee/streams" target="_blank" rel="noopener">YouTubeのライブ一覧を見る<span aria-hidden="true">→</span></a></p>
   </section>
 
-  <section id="links">
-    <h2>リンク</h2>
-    <ul class="links">
-      <li><a class="social-link" href="https://www.youtube.com/@YonagiAmaneee" target="_blank" rel="noopener"><svg class="social-icon youtube-mark" viewBox="0 0 24 24" aria-hidden="true"><rect x="1.5" y="4" width="21" height="16" rx="5"/><path class="play" d="M10 8.25v7.5l6.25-3.75z"/></svg>YouTube</a></li>
-      <li><a class="social-link" href="https://x.com/YonagiAmaneee" target="_blank" rel="noopener"><svg class="social-icon x-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.9 1.15h3.68l-8.04 9.19L24 22.85h-7.41l-5.8-7.58-6.63 7.58H.48l8.6-9.83L0 1.15h7.59l5.24 6.93 6.07-6.93Zm-1.29 19.5h2.04L6.49 3.24H4.3l13.31 17.41Z"/></svg>X</a></li>
-      <li><a class="social-link" href="https://marshmallow-qa.com/yonagiamaneee" target="_blank" rel="noopener"><svg class="social-icon marshmallow-mark" viewBox="0 0 1000 1000" aria-hidden="true"><path class="body" d="M80 426C98 316 250 147 369 105c74-26 111 9 181 73 78 70 172 156 191 228 18 69-70 184-151 267-68 70-143 127-202 112-70-18-158-116-242-208C92 517 69 480 80 426Z"/><path class="shine" d="M159 443c105-42 251-187 273-298"/><circle class="eye" cx="493" cy="350" r="35"/><circle class="eye" cx="309" cy="534" r="35"/><circle class="cheek" cx="618" cy="401" r="43"/><circle class="cheek" cx="356" cy="661" r="43"/><path class="mouth" d="M438 572c44-31 71-75 91-104 14-20 28-13 44 7 37 47 18 103-28 131-37 23-88 25-118-4-10-10-5-22 11-30Z"/><path class="tongue" d="M476 593c13-27 36-49 65-58 8 28-20 63-58 78-10 4-13-7-7-20Z"/><path class="outline" d="m820 528 116 118m-263 56 117 116m-286 8 113 116"/></svg>マシュマロ</a></li>
-      <li><a class="social-link" href="https://yonagiamanee.booth.pm/" target="_blank" rel="noopener"><svg class="social-icon service-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l1.2 12H3.8L5 8Z"/><path d="M8 8V6.5a4 4 0 0 1 8 0V8"/><path d="M8 11v5m4-5v5m4-5v5"/></svg>グッズ販売（BOOTH）</a></li>
-      <li><a class="social-link" href="https://fansfer.p-dlt.com/7s8KxdfASiZCITAxvDb4Sxkpe7g2" target="_blank" rel="noopener"><svg class="social-icon service-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9h18v12H3zM2 6h20v3H2zM12 6v15"/><path d="M12 6H7.2a2.2 2.2 0 1 1 2.2-2.2C9.4 5 12 6 12 6Zm0 0h4.8a2.2 2.2 0 1 0-2.2-2.2C14.6 5 12 6 12 6Z"/></svg>差し入れ（Fansfer）</a></li>
-      <li><a class="social-link" href="https://x.com/pakyapoppo" target="_blank" rel="noopener"><svg class="social-icon x-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.9 1.15h3.68l-8.04 9.19L24 22.85h-7.41l-5.8-7.58-6.63 7.58H.48l8.6-9.83L0 1.15h7.59l5.24 6.93 6.07-6.93Zm-1.29 19.5h2.04L6.49 3.24H4.3l13.31 17.41Z"/></svg>サブアカウント</a></li>
-      <li><a href="https://lit.link/YonagiAmaneee" target="_blank" rel="noopener">Lit.Link</a></li>
+  <section id="links" class="reveal">
+    <div class="sec-head">
+      <p class="sec-en" aria-hidden="true">Links</p>
+      <h2>リンク</h2>
+    </div>
+    <ul class="link-grid">
+      <li><a class="link-card" href="https://www.youtube.com/@YonagiAmaneee" target="_blank" rel="noopener">
+        <span class="link-icon"><svg class="icon youtube-mark" viewBox="0 0 24 24" aria-hidden="true"><rect x="1.5" y="4" width="21" height="16" rx="5"/><path class="play" d="M10 8.25v7.5l6.25-3.75z"/></svg></span>
+        <span class="link-text"><b>YouTube</b><small>@YonagiAmaneee</small></span></a></li>
+      <li><a class="link-card" href="https://x.com/YonagiAmaneee" target="_blank" rel="noopener">
+        <span class="link-icon"><svg class="icon x-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.9 1.15h3.68l-8.04 9.19L24 22.85h-7.41l-5.8-7.58-6.63 7.58H.48l8.6-9.83L0 1.15h7.59l5.24 6.93 6.07-6.93Zm-1.29 19.5h2.04L6.49 3.24H4.3l13.31 17.41Z"/></svg></span>
+        <span class="link-text"><b>X</b><small>@YonagiAmaneee</small></span></a></li>
+      <li><a class="link-card" href="https://x.com/pakyapoppo" target="_blank" rel="noopener">
+        <span class="link-icon"><svg class="icon x-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.9 1.15h3.68l-8.04 9.19L24 22.85h-7.41l-5.8-7.58-6.63 7.58H.48l8.6-9.83L0 1.15h7.59l5.24 6.93 6.07-6.93Zm-1.29 19.5h2.04L6.49 3.24H4.3l13.31 17.41Z"/></svg></span>
+        <span class="link-text"><b>サブアカウント</b><small>@pakyapoppo</small></span></a></li>
+      <li><a class="link-card" href="https://marshmallow-qa.com/yonagiamaneee" target="_blank" rel="noopener">
+        <span class="link-icon"><svg class="icon marshmallow-mark" viewBox="0 0 1000 1000" aria-hidden="true"><path class="body" d="M80 426C98 316 250 147 369 105c74-26 111 9 181 73 78 70 172 156 191 228 18 69-70 184-151 267-68 70-143 127-202 112-70-18-158-116-242-208C92 517 69 480 80 426Z"/><path class="shine" d="M159 443c105-42 251-187 273-298"/><circle class="eye" cx="493" cy="350" r="35"/><circle class="eye" cx="309" cy="534" r="35"/><circle class="cheek" cx="618" cy="401" r="43"/><circle class="cheek" cx="356" cy="661" r="43"/><path class="mouth" d="M438 572c44-31 71-75 91-104 14-20 28-13 44 7 37 47 18 103-28 131-37 23-88 25-118-4-10-10-5-22 11-30Z"/><path class="tongue" d="M476 593c13-27 36-49 65-58 8 28-20 63-58 78-10 4-13-7-7-20Z"/><path class="outline" d="m820 528 116 118m-263 56 117 116m-286 8 113 116"/></svg></span>
+        <span class="link-text"><b>マシュマロ</b><small>質問・お便り</small></span></a></li>
+      <li><a class="link-card" href="https://yonagiamanee.booth.pm/" target="_blank" rel="noopener">
+        <span class="link-icon"><svg class="icon line-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 8h14l1.2 12H3.8L5 8Z"/><path d="M8 8V6.5a4 4 0 0 1 8 0V8"/><path d="M8 11v5m4-5v5m4-5v5"/></svg></span>
+        <span class="link-text"><b>BOOTH</b><small>グッズ販売</small></span></a></li>
+      <li><a class="link-card" href="https://fansfer.p-dlt.com/7s8KxdfASiZCITAxvDb4Sxkpe7g2" target="_blank" rel="noopener">
+        <span class="link-icon"><svg class="icon line-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9h18v12H3zM2 6h20v3H2zM12 6v15"/><path d="M12 6H7.2a2.2 2.2 0 1 1 2.2-2.2C9.4 5 12 6 12 6Zm0 0h4.8a2.2 2.2 0 1 0-2.2-2.2C14.6 5 12 6 12 6Z"/></svg></span>
+        <span class="link-text"><b>Fansfer</b><small>差し入れ</small></span></a></li>
+      <li><a class="link-card" href="https://lit.link/YonagiAmaneee" target="_blank" rel="noopener">
+        <span class="link-icon"><svg class="icon line-mark" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1.2 1.2"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1.2-1.2"/></svg></span>
+        <span class="link-text"><b>lit.link</b><small>まとめリンク</small></span></a></li>
     </ul>
   </section>
 
-  <section id="contact">
-    <h2>お仕事のお問い合わせ</h2>
-    <p class="contact-email">Mail : yonagi.amane@gmail.com</p>
+  <section id="hashtags" class="reveal">
+    <div class="sec-head">
+      <p class="sec-en" aria-hidden="true">Hashtags</p>
+      <h2>ハッシュタグ</h2>
+    </div>
+    <ul class="tag-grid">
+      <li><a class="tag-card" href="https://x.com/search?q=%23%E5%A4%9C%E5%87%AA%E5%A4%A9%E8%A6%A7%E4%BC%9A" target="_blank" rel="noopener"><span class="tag-use">FA</span><span class="tag-name">#夜凪天覧会</span></a></li>
+      <li><a class="tag-card" href="https://x.com/search?q=%23%E3%81%B1%E3%81%8D%E3%82%83%E3%81%BD%E3%81%BF%E3%81%A6" target="_blank" rel="noopener"><span class="tag-use">エゴサ</span><span class="tag-name">#ぱきゃぽみて</span></a></li>
+      <li><a class="tag-card" href="https://x.com/search?q=%23%E3%82%88%E3%81%AA%E3%81%8E%E3%82%8A" target="_blank" rel="noopener"><span class="tag-use">切り抜き</span><span class="tag-name">#よなぎり</span></a></li>
+    </ul>
   </section>
 
-  <footer>
-    <div class="footer-inner">
-      <div><p>Illust / Live2D:西瀬 さめ 様(@3dsamechan)<br>Logo:はるぺ 様(@harumaki03161)</p><p>&copy; 2026 夜凪 天</p></div>
-      <img class="footer-logo" src="images/yonagi-amane-logo.png" alt="夜凪 天 ロゴ" width="132" height="132" loading="lazy">
+  <section id="guidelines" class="reveal">
+    <div class="sec-head">
+      <p class="sec-en" aria-hidden="true">Guideline</p>
+      <h2>二次創作におけるガイドライン</h2>
     </div>
-  </footer>
-</div>
+    <div class="panel">
+      <p class="guide-intro">一般的なモラルを守って頂ける限り、非営利目的の範囲内で二次創作物を自由にご制作いただいて構いません。</p>
+      <div class="rules">
+        <div>
+          <h3>ファンアートの投稿・利用について</h3>
+          <ul class="stars">
+            <li>「夜凪天覧会」タグにあげていただいたFAについてはサムネイル等で使用させて頂く場合があります。</li>
+            <li>衣装捏造について特に制限しません。<br>（むしろいろんな服装を見れて嬉しいです！）</li>
+            <li>R18イラストについては乗せる場合「夜凪天覧会」タグではなく「ぱきゃぽみて」タグに投稿お願いします。<br>（こちらからRPすることはないですが本人は喜んで見ます！）</li>
+            <li>絵師さんへのイラスト依頼について特に制限しません。Skeb等好きに依頼していただいて大丈夫です！</li>
+          </ul>
+        </div>
+        <div>
+          <h3>リスナーさんからのDMについて</h3>
+          <ul class="stars">
+            <li><strong>メインアカウントのDM</strong>は基本的に返信していません。</li>
+            <li><strong>ご用件がある場合</strong>は<a href="https://x.com/pakyapoppo" target="_blank" rel="noopener">サブアカウント</a>までご連絡ください。</li>
+            <li><strong>雑談などの個人的な内容</strong>は基本的に返信していません。</li>
+          </ul>
+        </div>
+      </div>
+      <p class="note">※その他不明点あればサブ垢のDM、マシュマロ等へ質問お願いします。</p>
+    </div>
+  </section>
+
+  <section id="contact" class="reveal">
+    <div class="sec-head">
+      <p class="sec-en" aria-hidden="true">Contact</p>
+      <h2>お仕事のお問い合わせ</h2>
+    </div>
+    <div class="panel contact">
+      <a class="mail" href="mailto:yonagi.amane@gmail.com">yonagi.amane@gmail.com</a>
+      <button class="copy" type="button" data-copy="yonagi.amane@gmail.com">アドレスをコピー</button>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <img class="footer-logo" src="images/yonagi-amane-logo.png" alt="" width="1255" height="1268" loading="lazy">
+  <p class="credit">Illust / Live2D：西瀬 さめ 様（@3dsamechan）<br>Logo：はるぺ 様（@harumaki03161）</p>
+  <p class="copyright">&copy; 2026 夜凪 天</p>
+</footer>
 
 <script src="schedule.js" defer></script>
-
 <script src="main.js" defer></script>
 </body>
 </html>
