@@ -9,10 +9,10 @@ if(root.classList.contains('intro')&&scr){
   let out=false;
   const finish=()=>{
     if(out)return;out=true;
-    /* 画面が夜の色に暮れて (1.4秒)、サイトへ切り替わり始める頃に、隠してあった立ち絵や文字をふわっと出す */
-    root.classList.add('intro-out');setTimeout(play,1200);
+    /* 穴が開き始めたら (0.3秒) 隠してあった立ち絵や文字をふわっと出す。穴の向こうで出てくるように見える */
+    root.classList.add('intro-out');setTimeout(play,300);
     try{sessionStorage.setItem('intro','1')}catch{}
-    setTimeout(()=>{scr.remove();root.classList.remove('intro','intro-go','intro-out')},2150);
+    setTimeout(()=>{scr.remove();root.classList.remove('intro','intro-go','intro-out')},2350);
   };
   const go=()=>{if(out||root.classList.contains('intro-go'))return;root.classList.add('intro-go');setTimeout(finish,2900)};
   /* 3枚の画像が読めてから始める。遅いときも1.5秒で始める */
