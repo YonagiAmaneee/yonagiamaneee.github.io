@@ -9,10 +9,10 @@ if(root.classList.contains('intro')&&scr){
   let out=false;
   const finish=()=>{
     if(out)return;out=true;
-    /* 立ち絵や文字はロゴアニメーション中は隠してあり (style.css)、画面が溶けきる少し前からふわっと出す */
-    root.classList.add('intro-out');setTimeout(play,450);
+    /* 画面が夜の色に暮れて (1.4秒)、サイトへ切り替わり始める頃に、隠してあった立ち絵や文字をふわっと出す */
+    root.classList.add('intro-out');setTimeout(play,1200);
     try{sessionStorage.setItem('intro','1')}catch{}
-    setTimeout(()=>{scr.remove();root.classList.remove('intro','intro-go','intro-out')},950);
+    setTimeout(()=>{scr.remove();root.classList.remove('intro','intro-go','intro-out')},2150);
   };
   const go=()=>{if(out||root.classList.contains('intro-go'))return;root.classList.add('intro-go');setTimeout(finish,2900)};
   /* 3枚の画像が読めてから始める。遅いときも1.5秒で始める */
@@ -22,8 +22,18 @@ if(root.classList.contains('intro')&&scr){
   addEventListener('keydown',finish,{once:true});
 }else play();
 
-/* ナビ: スクロールしたら背景を濃くし、今いる項目を光らせる */
-const nav=document.querySelector('.nav'), links=[...document.querySelectorAll('.nav-links a')];
+/* メニュー: 三本線で開閉。項目を選ぶ・Esc・もう一度押すで閉じる */
+const nav=document.querySelector('.nav'), links=[...document.querySelectorAll('.menu-links a')], menuBtn=document.querySelector('.menu-btn');
+const setMenu=open=>{
+  nav.classList.toggle('open',open);root.classList.toggle('menu-open',open);
+  menuBtn.setAttribute('aria-expanded',open);menuBtn.setAttribute('aria-label',open?'メニューを閉じる':'メニューを開く');
+};
+menuBtn.addEventListener('click',()=>setMenu(!nav.classList.contains('open')));
+links.forEach(a=>a.addEventListener('click',()=>setMenu(false)));
+document.getElementById('menu').addEventListener('click',e=>{if(e.target.id==='menu')setMenu(false)});
+addEventListener('keydown',e=>{if(e.key==='Escape'&&nav.classList.contains('open')){setMenu(false);menuBtn.focus()}});
+
+/* スクロールしたらボタンの背景を濃くし、メニューの中の今いる項目を光らせる */
 const onScroll=()=>nav.classList.toggle('scrolled',scrollY>40);
 onScroll();addEventListener('scroll',onScroll,{passive:true});
 const sections=links.map(a=>document.querySelector(a.hash)).filter(Boolean);
