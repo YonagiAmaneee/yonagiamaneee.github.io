@@ -3,7 +3,13 @@ const root=document.documentElement, rm=matchMedia('(prefers-reduced-motion:redu
 root.classList.add('js');
 
 /* 開いたときのロゴアニメーション (流れは style.css の説明を参照)。終わったらヒーローの登場アニメーション (.play) へ */
-const play=()=>root.classList.add('play');
+/* 立ち絵の読み込みが終わってから登場アニメーションを始める (遅い回線で途中から絵がパッと出ないように)。最大2.5秒待つ */
+const artImg=document.querySelector('.stage .art');
+const artReady=new Promise(res=>{
+  if(!artImg||artImg.complete&&artImg.naturalWidth)return res();
+  artImg.addEventListener('load',res,{once:true});artImg.addEventListener('error',res,{once:true});setTimeout(res,2500);
+});
+const play=()=>artReady.then(()=>root.classList.add('play'));
 const scr=document.querySelector('.intro-screen');
 if(root.classList.contains('intro')&&scr){
   let out=false;

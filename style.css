@@ -278,7 +278,8 @@ p{margin:0 0 1em}
   .scroll-cue::after{animation:cue 2.2s ease-in-out infinite;transform-origin:top}
   @keyframes cue{0%{transform:scaleY(0)}50%{transform:scaleY(1)}100%{transform:scaleY(1);opacity:0}}
   /* ロゴアニメーション中は隠しておき、溶けたあとに下の登場アニメーションでふわっと出す (途中の状態が透けて崩れて見えないように) */
-  html.intro:not(.play) :is(.art,.reflect,.chart,.hero-copy>*){opacity:0}
+  html.wait:not(.play) :is(.art,.reflect,.chart,.hero-copy>*){opacity:0;animation:show 0s 4s forwards} /* 4秒たっても始まらなければ (スクリプトが動かないとき) そのまま出す */
+  @keyframes show{to{opacity:1}}
   .play .art{animation:rise 1.6s .2s cubic-bezier(.2,.7,.2,1) both}
   .play .reflect{animation:fade 2s .6s both}
   .play .chart{animation:pop 1.6s cubic-bezier(.2,.7,.2,1) both}

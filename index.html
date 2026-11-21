@@ -14,7 +14,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Symbols&text=%E2%99%88%E2%99%89%E2%99%8A%E2%99%8B%E2%99%8C%E2%99%8D%E2%99%8E%E2%99%8F%E2%99%90%E2%99%91%E2%99%92%E2%99%93%EF%B8%8E&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
-<script>/* 開いたときのロゴアニメーション: このタブで初めてのときだけ。動きを減らす設定の人には出さない */try{if(!sessionStorage.getItem("intro")&&!matchMedia("(prefers-reduced-motion:reduce)").matches)document.documentElement.classList.add("intro")}catch(e){}</script>
+<script>/* 開いたときのロゴアニメーション: このタブで初めてのときだけ。動きを減らす設定の人には出さない */try{if(!sessionStorage.getItem("intro")&&!matchMedia("(prefers-reduced-motion:reduce)").matches)document.documentElement.classList.add("intro")}catch(e){}
+/* 登場アニメーション (.play) が始まるまでトップ画面の立ち絵・円盤・文字を隠す (読み込み中に一度見えてから出直すのを防ぐ) */document.documentElement.classList.add("wait")</script>
 </head>
 <body>
 <div class="intro-screen" aria-hidden="true">
@@ -58,14 +59,16 @@
       <g class="wheel-out" id="wheel-outer"></g>
       <g class="wheel-in" id="wheel-inner"></g>
     </svg>
-    <img class="art" src="images/art/01.webp" alt="夜凪 天のイラスト" width="1400" height="1466" fetchpriority="high">
-    <img class="reflect" src="images/art/01.webp" alt="" width="1400" height="1466" aria-hidden="true">
+    <!-- src は下のスクリプトが入れる (先に別の絵を読み込んで差し替わるのを防ぐ) -->
+    <img class="art" alt="夜凪 天のイラスト" width="1400" height="1466" fetchpriority="high">
+    <img class="reflect" alt="" width="1400" height="1466" aria-hidden="true">
+    <noscript><style>.stage .art,.stage .reflect{display:none}</style><img class="art" src="images/art/01.webp" alt="夜凪 天のイラスト" width="1400" height="1466"></noscript>
     <script>
       /* 立ち絵: 開くたびにこの中から1枚をランダムに出す。増やすときは images/ に置いて1行足す (下端が腰あたりで切れている透明背景の絵が合う) */
       (function(){
         var ARTS=['images/art/01.webp','images/art/02.webp','images/art/03.webp','images/art/04.webp','images/art/05.webp','images/art/06.webp','images/art/07.webp','images/art/08.webp','images/art/10.webp','images/art/11.webp','images/art/12.webp','images/art/13.webp','images/art/14.webp','images/art/15.webp','images/art/16.webp','images/art/17.webp','images/art/18.webp','images/art/19.webp','images/art/20.webp','images/art/21.webp','images/art/22.webp','images/art/23.webp','images/art/24.webp','images/art/25.webp','images/art/26.webp','images/art/27.webp','images/art/28.webp','images/art/29.webp','images/art/30.webp','images/art/31.webp','images/art/32.webp','images/art/33.webp']; /* 番号と元のファイル名の対応は 仕様書.md */
         var src=ARTS[Math.floor(Math.random()*ARTS.length)];
-        document.querySelectorAll('.stage .art,.stage .reflect').forEach(function(i){if(i.getAttribute('src')!==src)i.src=src});
+        document.querySelectorAll('.stage .art,.stage .reflect').forEach(function(i){i.src=src});
       })();
     </script>
   </div>
